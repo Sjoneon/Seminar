@@ -28,14 +28,18 @@ public class MemberMgr {
         String sql = null;
         boolean flag = false;
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
+            // 아이디 중복 확인 쿼리
             sql = "select id from tblMember where id = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, id);
+            // 쿼리 실행 결과 확인
             flag = pstmt.executeQuery().next();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con, pstmt, rs);
         }
         return flag;
@@ -49,12 +53,16 @@ public class MemberMgr {
         String sql = null;
         Vector<ZipcodeBean> vlist = new Vector<ZipcodeBean>();
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
+            // 우편번호 검색 쿼리
             sql = "select * from tblZipcode where area3 like ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, "%" + area3 + "%");
+            // 쿼리 실행 결과 처리
             rs = pstmt.executeQuery();
             while (rs.next()) {
+                // 검색 결과를 ZipcodeBean 객체에 담고 벡터에 추가
                 ZipcodeBean bean = new ZipcodeBean();
                 bean.setZipcode(rs.getString(1));
                 bean.setArea1(rs.getString(2));
@@ -65,6 +73,7 @@ public class MemberMgr {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con, pstmt, rs);
         }
         return vlist;
@@ -77,10 +86,13 @@ public class MemberMgr {
         String sql = null;
         boolean flag = false;
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
+            // 회원 가입 쿼리
             sql = "insert tblMember(id,pwd,name,gender,birthday,email,zipcode,"
                     + "address,hobby,job)values(?,?,?,?,?,?,?,?,?,?)";
             pstmt = con.prepareStatement(sql);
+            // 쿼리에 파라미터 설정
             pstmt.setString(1, bean.getId());
             pstmt.setString(2, bean.getPwd());
             pstmt.setString(3, bean.getName());
@@ -100,11 +112,13 @@ public class MemberMgr {
             }
             pstmt.setString(9, new String(hb));
             pstmt.setString(10, bean.getJob());
+            // 쿼리 실행 결과 확인
             if (pstmt.executeUpdate() == 1)
                 flag = true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con, pstmt);
         }
         return flag;
@@ -118,16 +132,20 @@ public class MemberMgr {
         String sql = null;
         boolean flag = false;
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
+            // 로그인 쿼리
             sql = "select id from tblMember where id = ? and pwd = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, pwd);
+            // 쿼리 실행 결과 확인
             rs = pstmt.executeQuery();
             flag = rs.next();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con, pstmt, rs);
         }
         return flag;
@@ -140,12 +158,15 @@ public class MemberMgr {
         ResultSet rs = null;
         MemberBean bean = null;
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
             String sql = "select * from tblMember where id = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, id);
+            // 쿼리 실행 결과 확인
             rs = pstmt.executeQuery();
             if (rs.next()) {
+                // 조회된 회원 정보를 MemberBean 객체에 담음
                 bean = new MemberBean();
                 bean.setId(rs.getString("id"));
                 bean.setPwd(rs.getString("pwd"));
@@ -166,6 +187,7 @@ public class MemberMgr {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con);
         }
         return bean;
@@ -177,10 +199,12 @@ public class MemberMgr {
         PreparedStatement pstmt = null;
         boolean flag = false;
         try {
+            // 데이터베이스 연결
             con = pool.getConnection();
             String sql = "update tblMember set pwd=?, name=?, gender=?, birthday=?,"
                     + "email=?, zipcode=?, address=?, hobby=?, job=? where id = ?";
             pstmt = con.prepareStatement(sql);
+            // 쿼리에 파라미터 설정
             pstmt.setString(1, bean.getPwd());
             pstmt.setString(2, bean.getName());
             pstmt.setString(3, bean.getGender());
@@ -201,12 +225,14 @@ public class MemberMgr {
             pstmt.setString(8, new String(hobby));
             pstmt.setString(9, bean.getJob());
             pstmt.setString(10, bean.getId());
+            // 쿼리 실행 결과 확인
             int count = pstmt.executeUpdate();
             if (count > 0)
                 flag = true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // 데이터베이스 연결 해제
             pool.freeConnection(con, pstmt);
         }
         return flag;
