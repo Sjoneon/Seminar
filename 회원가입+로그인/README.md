@@ -1,3 +1,4 @@
+/*
 <%@ page contentType="text/html; charset=EUC-KR" %>:
 
 JSP 페이지의 콘텐츠 타입을 HTML로 설정하고, 문자셋을 EUC-KR로 지정합니다.
@@ -100,3 +101,5 @@ HTML 문서의 본문을 닫습니다.
 </html>:
 
 HTML 문서를 닫습니다.
+
+*/
